@@ -20,8 +20,9 @@ public class BookServiceImpl implements BookService{
     public Book findById(Integer id) {
         String comand = "SELECT * FROM books WHERE id=?";
         Book book = null;
+
         try {
-            Handle handle = configuracion.validacionConexion();
+            Handle handle = configuracion.validacionConexion().open();
             book = handle.select(comand, id)
                     .mapToBean(Book.class)
                     .one();
@@ -34,7 +35,7 @@ public class BookServiceImpl implements BookService{
     public List<Book> findAll() {
         String comand = "SELECT * FROM books";
         try {
-            Handle handle = configuracion.validacionConexion();
+            Handle handle = configuracion.validacionConexion().open();
             listaBD = handle.createQuery(comand)
                     .mapToBean(Book.class)
                     .list();
@@ -49,7 +50,7 @@ public class BookServiceImpl implements BookService{
         Handle handle = null;
         String comand = "INSERT INTO books(isbn, author, price, title) VALUES (?, ?, ?, ?)";
         try {
-            handle = configuracion.validacionConexion();
+            handle = configuracion.validacionConexion().open();
             handle.execute(comand,book.getIsbn(), book.getAuthor(),book.getPrice(), book.getTitle());
             handle.close();
         }catch (Exception e){
@@ -60,7 +61,7 @@ public class BookServiceImpl implements BookService{
         Handle handle = null;
         String comand = "UPDATE books SET isbn = :isbn, title = :title, author = :author, price = :price WHERE id = :id";
         try {
-            handle = configuracion.validacionConexion();
+            handle = configuracion.validacionConexion().open();
             handle.createUpdate(comand)
                     .bind("isbn", book.getIsbn())
                     .bind("title", book.getTitle())
@@ -79,7 +80,7 @@ public class BookServiceImpl implements BookService{
         String comand = "DELETE FROM books WHERE id = " + id;
         System.out.println("--------------"+id+"-----------------");
         try {
-            handle = configuracion.validacionConexion();
+            handle = configuracion.validacionConexion().open();
             handle.execute(comand);
             handle.close();
         }catch (Exception e){

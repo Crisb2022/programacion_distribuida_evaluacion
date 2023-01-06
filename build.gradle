@@ -19,10 +19,12 @@ dependencies {
     implementation 'org.glassfish.jersey.media:jersey-media-json-binding'
     implementation 'io.helidon.microprofile.server:helidon-microprofile-server'
     runtimeOnly 'org.jboss:jandex'
-    //jdbi
+    // jdbi
     implementation 'org.jdbi:jdbi3-core:3.36.0'
     implementation 'org.jdbi:jdbi3-sqlobject:3.36.0'
     implementation 'org.postgresql:postgresql:9.4-1206-jdbc42'
+    // Pool de conexion
+    implementation 'com.zaxxer:HikariCP:5.0.1'
 }
 sourceSets {
     main {

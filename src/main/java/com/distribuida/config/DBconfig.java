@@ -1,6 +1,7 @@
 package com.distribuida.config;
 
 
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,6 +12,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperties;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+
+import javax.sql.DataSource;
 
 @ApplicationScoped // Permite que sea un componente CDI
 public class DBconfig {
@@ -27,22 +30,30 @@ public class DBconfig {
     @ConfigProperty(name="db.url")
     String dbURL;
 
-    Jdbi conexion = null;
+    @Inject
+    @ConfigProperty(name="db.name")
+    String dbName;
+
+
     @PostConstruct
     public void init(){
+        validacionConexion();
     }
 
     public void test() {
 
     }
 
-    @ApplicationScoped
     @Produces
-    public Handle validacionConexion(){
-        conexion = Jdbi.create(dbURL,dbUser,dbPassword);
-        System.out.println("op2: "+ dbUser);
-        System.out.println("op2: "+ dbPassword);
-        System.out.println("op2: "+ dbURL);
-        return conexion.open();
+    @ApplicationScoped
+    //Hikari
+    public Jdbi validacionConexion() {
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setDriverClassName(dbName);
+        dataSource.setJdbcUrl(dbURL);
+        dataSource.setUsername(dbUser);
+        dataSource.setPassword(dbPassword);
+        Jdbi conexion = Jdbi.create(dataSource);
+        return conexion;
     }
 }
