@@ -78,7 +78,6 @@ public class BookServiceImpl implements BookService{
     public void delete(Integer id){
         Handle handle = null;
         String comand = "DELETE FROM books WHERE id = " + id;
-        System.out.println("--------------"+id+"-----------------");
         try {
             handle = configuracion.validacionConexion().open();
             handle.execute(comand);
